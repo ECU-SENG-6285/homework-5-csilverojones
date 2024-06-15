@@ -1,0 +1,17 @@
+steps:
+  # Use maven to package the app
+  - name: maven:3-jdk-11
+    entrypoint: mvn
+    args: ['package']
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/csci-4170-423423/restful-bots-hw5', '.']
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/csci-4170-423423/restful-bots-hw5']
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: ['run', 'deploy', 'restful-bots-hw5', '--image', 'gcr.io/csci-4170-423423/restful-bots-hw5', '--region', 'us-east1', '--platform', 'managed']
+images:
+  - gcr.io/csci-4170-423423/restful-bots-hw5
